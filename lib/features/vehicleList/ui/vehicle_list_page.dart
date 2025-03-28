@@ -43,29 +43,30 @@ class VehicleListPage extends ConsumerWidget {
   }
 }
 
-// var gridview = GridView.count(crossAxisCount: 3, children: fakeChildren);
 var gridview = GridView.builder(
   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
     maxCrossAxisExtent: 400.0, // Maximum width of each grid item
     crossAxisSpacing: 8.0,
     mainAxisSpacing: 8.0,
-    childAspectRatio: 1.0,
+    childAspectRatio: 1.8,
   ),
   itemCount: vehicles.length,
   itemBuilder: (context, index) {
     final vehicle = vehicles[index];
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        title: Text(
-          vehicle.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+      child: Card(
+        child: ListTile(
+          title: Text(
+            vehicle.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text("Model: ${vehicle.model} | Year: ${vehicle.year}"),
+          onTap:
+              () => context.router.push(
+                VehicleDetailRoute(id: vehicle.id),
+              ), // Navigate to details
         ),
-        subtitle: Text("Model: ${vehicle.model} | Year: ${vehicle.year}"),
-        onTap:
-            () => context.router.push(
-              VehicleDetailRoute(id: vehicle.id),
-            ), // Navigate to details
       ),
     );
   },
@@ -75,18 +76,21 @@ var listview = ListView.builder(
   itemCount: vehicles.length,
   itemBuilder: (context, index) {
     final vehicle = vehicles[index];
-    return Card(
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 120),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        title: Text(
-          vehicle.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+      child: Card(
+        child: ListTile(
+          title: Text(
+            vehicle.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text("Model: ${vehicle.model} | Year: ${vehicle.year}"),
+          onTap:
+              () => context.router.push(
+                VehicleDetailRoute(id: vehicle.id),
+              ), // Navigate to details
         ),
-        subtitle: Text("Model: ${vehicle.model} | Year: ${vehicle.year}"),
-        onTap:
-            () => context.router.push(
-              VehicleDetailRoute(id: vehicle.id),
-            ), // Navigate to details
       ),
     );
   },
