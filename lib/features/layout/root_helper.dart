@@ -1,10 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive/features/router/app_router.gr.dart';
 
 class RootHelper {
   final Widget child = Center();
 
-  final routes = [
+  static List<PageRouteInfo<Object?>> routes = [
     const VehicleListRoute(),
     VehicleDetailRoute(id: 1),
     const TemperatureHistoryRoute(),

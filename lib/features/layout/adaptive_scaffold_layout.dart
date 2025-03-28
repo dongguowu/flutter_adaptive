@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive/features/layout/root_helper.dart';
 import 'package:flutter_adaptive/features/layout/selected_tab_notifier.dart';
-import 'package:flutter_adaptive/features/router/app_router.gr.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -72,12 +71,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     // The AutoTabsRouter is a widget that provides a way to navigate between tabs
     // using the AutoRoute package.
     return AutoTabsRouter(
-      routes: [
-        const VehicleListRoute(),
-        VehicleDetailRoute(id: 1),
-        const TemperatureHistoryRoute(),
-        const ProfileRoute(),
-      ],
+      routes: RootHelper.routes,
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
 
@@ -87,6 +81,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
           // Primary navigation config has nothing from 0 to 600 dp screen width,
           // then an unextended NavigationRail with no labels and just icons then an
           // extended NavigationRail with both icons and labels.
+          // medium vs mediumLarger = extended: false vs true ,
           primaryNavigation: SlotLayout(
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.medium: SlotLayout.from(
@@ -101,6 +96,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                           tabsRouter.setActiveIndex(newIndex);
                         });
                       },
+                      extended: false,
                       leading: const Icon(Icons.menu),
                       destinations:
                           destinations
@@ -128,7 +124,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                       selectedIndex: selectedNavigation,
                       onDestinationSelected: (int newIndex) {
                         setState(() {
-                          selectedNavigation = newIndex;
+                          onSelectedIndexChange(newIndex);
+                          tabsRouter.setActiveIndex(newIndex);
                         });
                       },
                       extended: true,
@@ -158,53 +155,16 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                           navRailTheme.unselectedLabelTextStyle,
                     ),
               ),
-              Breakpoints.large: SlotLayout.from(
-                key: const Key('Primary Navigation Large'),
+              Breakpoints.largeAndUp: SlotLayout.from(
+                key: const Key('Primary Navigation MediumLarge'),
                 inAnimation: AdaptiveScaffold.leftOutIn,
                 builder:
                     (_) => AdaptiveScaffold.standardNavigationRail(
                       selectedIndex: selectedNavigation,
                       onDestinationSelected: (int newIndex) {
                         setState(() {
-                          selectedNavigation = newIndex;
-                        });
-                      },
-                      extended: true,
-                      leading: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text('REPLY', style: headerColor),
-                          const Icon(Icons.menu_open),
-                        ],
-                      ),
-                      destinations:
-                          destinations
-                              .map(
-                                (NavigationDestination destination) =>
-                                    AdaptiveScaffold.toRailDestination(
-                                      destination,
-                                    ),
-                              )
-                              .toList(),
-                      trailing: trailingNavRail,
-                      backgroundColor: navRailTheme.backgroundColor,
-                      selectedIconTheme: navRailTheme.selectedIconTheme,
-                      unselectedIconTheme: navRailTheme.unselectedIconTheme,
-                      selectedLabelTextStyle:
-                          navRailTheme.selectedLabelTextStyle,
-                      unSelectedLabelTextStyle:
-                          navRailTheme.unselectedLabelTextStyle,
-                    ),
-              ),
-              Breakpoints.extraLarge: SlotLayout.from(
-                key: const Key('Primary Navigation ExtraLarge'),
-                inAnimation: AdaptiveScaffold.leftOutIn,
-                builder:
-                    (_) => AdaptiveScaffold.standardNavigationRail(
-                      selectedIndex: selectedNavigation,
-                      onDestinationSelected: (int newIndex) {
-                        setState(() {
-                          selectedNavigation = newIndex;
+                          onSelectedIndexChange(newIndex);
+                          tabsRouter.setActiveIndex(newIndex);
                         });
                       },
                       extended: true,
@@ -240,37 +200,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
           // breakpoints and onwards.
           body: SlotLayout(
             config: <Breakpoint, SlotLayoutConfig>{
-              Breakpoints.small: SlotLayout.from(
+              Breakpoints.smallAndUp: SlotLayout.from(
                 key: const Key('Body Small'),
                 builder: (_) => child,
-              ),
-              Breakpoints.medium: SlotLayout.from(
-                key: const Key('Body Medium'),
-                builder: (_) => child,
-              ),
-              Breakpoints.mediumLarge: SlotLayout.from(
-                key: const Key('Body MediumLarge'),
-                builder:
-                    (_) => GridView.count(
-                      crossAxisCount: 3,
-                      children: fakeChildren,
-                    ),
-              ),
-              Breakpoints.large: SlotLayout.from(
-                key: const Key('Body Large'),
-                builder:
-                    (_) => GridView.count(
-                      crossAxisCount: 4,
-                      children: fakeChildren,
-                    ),
-              ),
-              Breakpoints.extraLarge: SlotLayout.from(
-                key: const Key('Body ExtraLarge'),
-                builder:
-                    (_) => GridView.count(
-                      crossAxisCount: 5,
-                      children: fakeChildren,
-                    ),
               ),
             },
           ),
