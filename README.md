@@ -24,24 +24,15 @@ The app uses ConsumerWidget for efficient reactivity.
 
 WidgetRef allows access to Riverpod providers.
 
-
-lib/
-│── features/
-│   ├── router/
-│   │   ├── app_router.dart        # Defines all app routes
-│   │   ├── app_router.gr.dart     # AutoRoute-generated file
-│   ├── vehicles/
-│   │   ├── vehicle_list_page.dart # Vehicles list screen
-│   │   ├── vehicle_detail_page.dart # Vehicle details screen
-│   ├── temperature/
-│   │   ├── temperature_history_page.dart # Temperature history
-│   ├── profile/
-│   │   ├── profile_page.dart      # Profile screen
-│── main.dart                      # App entry point
-│── adaptive_scaffold_layout.dart  # Adaptive navigation layout
+1. AdaptiveScaffold with side navi and bottom navi
+2. Keep Navigation Bar Persistent
+3. Define Routes with Nested Structure
+4. Use Path-Based Navigation
 
 
-project is structured well with AutoRoute + AdaptiveScaffold + Riverpod. 🚀 The bottom navigation remains persistent, and tabs switch smoothly. If needed, you can refine routing for better deep linking and state persistence.
+project is structured well with AutoRoute + AdaptiveScaffold + Riverpod. 
+
+🚀 The bottom navigation remains persistent, and tabs switch smoothly. If needed, you can refine routing for better deep linking and state persistence.
 
 
 Improvements & Next Steps
