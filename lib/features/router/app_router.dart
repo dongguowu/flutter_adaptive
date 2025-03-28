@@ -7,7 +7,7 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     AutoRoute(
-      page: AdaptiveScaffoldLayout.page,
+      page: MyHomeRoute.page,
       initial: true,
       children: [
         AutoRoute(page: VehicleListRoute.page, path: 'vehicles', initial: true),

@@ -23,19 +23,48 @@ import 'package:flutter_adaptive/features/vehicleList/ui/vehicle_list_page.dart'
     as _i5;
 
 /// generated route for
-/// [_i1.AdaptiveScaffoldLayout]
-class AdaptiveScaffoldLayout extends _i6.PageRouteInfo<void> {
-  const AdaptiveScaffoldLayout({List<_i6.PageRouteInfo>? children})
-    : super(AdaptiveScaffoldLayout.name, initialChildren: children);
+/// [_i1.MyHomePage]
+class MyHomeRoute extends _i6.PageRouteInfo<MyHomeRouteArgs> {
+  MyHomeRoute({
+    _i7.Key? key,
+    int transitionDuration = 1000,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
+         MyHomeRoute.name,
+         args: MyHomeRouteArgs(
+           key: key,
+           transitionDuration: transitionDuration,
+         ),
+         initialChildren: children,
+       );
 
-  static const String name = 'AdaptiveScaffoldLayout';
+  static const String name = 'MyHomeRoute';
 
   static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return const _i1.AdaptiveScaffoldLayout();
+      final args = data.argsAs<MyHomeRouteArgs>(
+        orElse: () => const MyHomeRouteArgs(),
+      );
+      return _i1.MyHomePage(
+        key: args.key,
+        transitionDuration: args.transitionDuration,
+      );
     },
   );
+}
+
+class MyHomeRouteArgs {
+  const MyHomeRouteArgs({this.key, this.transitionDuration = 1000});
+
+  final _i7.Key? key;
+
+  final int transitionDuration;
+
+  @override
+  String toString() {
+    return 'MyHomeRouteArgs{key: $key, transitionDuration: $transitionDuration}';
+  }
 }
 
 /// generated route for
