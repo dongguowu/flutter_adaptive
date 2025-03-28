@@ -47,26 +47,43 @@ class MyHomePage extends ConsumerWidget {
     Future<void> onSelectedIndexChange(int index) async {
       selectedTabNotifier.updateSelectedTab(index);
     }
-    
 
-    return AdaptiveScaffold(
-      // An option to override the default transition duration.
-      transitionDuration: Duration(milliseconds: _transitionDuration),
-      // An option to override the default breakpoints used for small, medium,
-      // mediumLarge, large, and extraLarge.
-      smallBreakpoint: const Breakpoint(endWidth: 700),
-      mediumBreakpoint: const Breakpoint(beginWidth: 700, endWidth: 1000),
-      mediumLargeBreakpoint: const Breakpoint(beginWidth: 1000, endWidth: 1200),
-      largeBreakpoint: const Breakpoint(beginWidth: 1200, endWidth: 1600),
-      extraLargeBreakpoint: const Breakpoint(beginWidth: 1600),
-      useDrawer: false,
-      selectedIndex: selectedTab,
+    return AutoTabsRouter(
+      routes: [
+        const VehicleListRoute(),
+        VehicleDetailRoute(id: 1),
+        const TemperatureHistoryRoute(),
+        const ProfileRoute(),
+      ],
 
-      onSelectedIndexChange: (int index) async {
-        await onSelectedIndexChange(index);
+      builder: (context, child) {
+        final tabsRouter = AutoTabsRouter.of(context);
+
+        return AdaptiveScaffold(
+          // An option to override the default transition duration.
+          transitionDuration: Duration(milliseconds: _transitionDuration),
+          // An option to override the default breakpoints used for small, medium,
+          // mediumLarge, large, and extraLarge.
+          smallBreakpoint: const Breakpoint(endWidth: 700),
+          mediumBreakpoint: const Breakpoint(beginWidth: 700, endWidth: 1000),
+          mediumLargeBreakpoint: const Breakpoint(
+            beginWidth: 1000,
+            endWidth: 1200,
+          ),
+          largeBreakpoint: const Breakpoint(beginWidth: 1200, endWidth: 1600),
+          extraLargeBreakpoint: const Breakpoint(beginWidth: 1600),
+          useDrawer: false,
+          selectedIndex: tabsRouter.activeIndex, // AutoTabsRouter manages index
+          // selectedIndex: selectedTab,
+          onSelectedIndexChange: (int index) async {
+            tabsRouter.setActiveIndex(index); // Changes the tab instantly
+
+            await onSelectedIndexChange(index);
+          },
+          destinations: destinations,
+          body: (_) => child, // AutoTabsRouter provides the correct page
+        );
       },
-      destinations: destinations,
-      body: (_) => child, // AutoTabsRouter provides the correct page
     );
   }
 
