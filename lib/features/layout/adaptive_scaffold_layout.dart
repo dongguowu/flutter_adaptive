@@ -116,46 +116,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                           navRailTheme.unselectedLabelTextStyle,
                     ),
               ),
-              Breakpoints.mediumLarge: SlotLayout.from(
-                key: const Key('Primary Navigation MediumLarge'),
-                inAnimation: AdaptiveScaffold.leftOutIn,
-                builder:
-                    (_) => AdaptiveScaffold.standardNavigationRail(
-                      selectedIndex: selectedNavigation,
-                      onDestinationSelected: (int newIndex) {
-                        setState(() {
-                          onSelectedIndexChange(newIndex);
-                          tabsRouter.setActiveIndex(newIndex);
-                        });
-                      },
-                      extended: true,
-                      leading: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text('REPLY', style: headerColor),
-                          const Icon(Icons.menu_open),
-                        ],
-                      ),
-                      destinations:
-                          destinations
-                              .map(
-                                (NavigationDestination destination) =>
-                                    AdaptiveScaffold.toRailDestination(
-                                      destination,
-                                    ),
-                              )
-                              .toList(),
-                      trailing: trailingNavRail,
-                      backgroundColor: navRailTheme.backgroundColor,
-                      selectedIconTheme: navRailTheme.selectedIconTheme,
-                      unselectedIconTheme: navRailTheme.unselectedIconTheme,
-                      selectedLabelTextStyle:
-                          navRailTheme.selectedLabelTextStyle,
-                      unSelectedLabelTextStyle:
-                          navRailTheme.unselectedLabelTextStyle,
-                    ),
-              ),
-              Breakpoints.largeAndUp: SlotLayout.from(
+              Breakpoints.mediumLargeAndUp: SlotLayout.from(
                 key: const Key('Primary Navigation MediumLarge'),
                 inAnimation: AdaptiveScaffold.leftOutIn,
                 builder:
