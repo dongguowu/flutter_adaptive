@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../router/app_router.gr.dart';
@@ -36,7 +37,8 @@ class VehicleListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Vehicles")),
-      body: ScreenSizeService.isWideScreen(context) ? gridview : listview,
+      // body: ScreenSizeService.isWideScreen(context) ? gridview : listview,
+      body: Breakpoints.mediumAndUp.isActive(context) ? gridview : listview,
     );
   }
 }
