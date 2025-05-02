@@ -24,7 +24,7 @@ The app uses ConsumerWidget for efficient reactivity.
 
 WidgetRef allows access to Riverpod providers.
 
-
+```
 lib/
 │── features/
 │   ├── router/
@@ -39,7 +39,7 @@ lib/
 │   │   ├── profile_page.dart      # Profile screen
 │── main.dart                      # App entry point
 │── adaptive_scaffold_layout.dart  # Adaptive navigation layout
-
+```
 
 project is structured well with AutoRoute + AdaptiveScaffold + Riverpod. 🚀 The bottom navigation remains persistent, and tabs switch smoothly. If needed, you can refine routing for better deep linking and state persistence.
 
