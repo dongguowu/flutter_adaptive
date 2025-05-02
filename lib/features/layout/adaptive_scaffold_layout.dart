@@ -2,99 +2,196 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive/features/layout/root_helper.dart';
 import 'package:flutter_adaptive/features/layout/selected_tab_notifier.dart';
-import 'package:flutter_adaptive/features/router/app_router.gr.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
-class MyHomePage extends ConsumerWidget {
+class MyHomePage extends ConsumerStatefulWidget {
+  /// Creates a const [MyHomePage].
   const MyHomePage({super.key, this.transitionDuration = 1000});
 
   /// Declare transition duration.
   final int transitionDuration;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    int _transitionDuration = transitionDuration;
-    final selectedTab = ref.watch(selectedTabProvider).valueOrNull;
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends ConsumerState<MyHomePage> {
+  // int selectedNavigation = 0;
+  int _transitionDuration = 1000;
+
+  // Initialize transition time variable.
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _transitionDuration = widget.transitionDuration;
+    });
+  }
+
+  final TextStyle headerColor = const TextStyle(
+    color: Color.fromARGB(255, 255, 201, 197),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final NavigationRailThemeData navRailTheme =
+        Theme.of(context).navigationRailTheme;
+
+    int selectedNavigation = ref.watch(selectedTabProvider).valueOrNull ?? 0;
     final selectedTabNotifier = ref.read(selectedTabProvider.notifier);
-
-    final routes = [
-      const VehicleListRoute(),
-      VehicleDetailRoute(id: 1),
-      const TemperatureHistoryRoute(),
-      const ProfileRoute(),
-    ];
-
-    // final tabsRouter = AutoTabsRouter.of(context);
-
-    final Widget child = Center();
-
-    final destinations = [
-      NavigationDestination(icon: const Icon(Icons.list), label: "Vehicles"),
-      NavigationDestination(
-        icon: const Icon(Icons.thermostat),
-        label: "Temp Control",
-      ),
-      NavigationDestination(
-        icon: const Icon(Icons.history),
-        label: "Temp History",
-      ),
-      NavigationDestination(icon: const Icon(Icons.person), label: "Profile"),
-    ];
 
     Future<void> onSelectedIndexChange(int index) async {
       selectedTabNotifier.updateSelectedTab(index);
     }
 
-    return AutoTabsRouter(
-      routes: [
-        const VehicleListRoute(),
-        VehicleDetailRoute(id: 1),
-        const TemperatureHistoryRoute(),
-        const ProfileRoute(),
-      ],
+    // Define the children to display within the body.
+    final List<Widget> fakeChildren = List<Widget>.generate(10, (int index) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          color: const Color.fromARGB(255, 255, 201, 197),
+          height: 400,
+        ),
+      );
+    });
 
+    final Widget trailingNavRail = Column(children: <Widget>[
+      ],
+    );
+
+    // Define the list of destinations to be used within the app.
+    List<NavigationDestination> destinations = RootHelper.destinations;
+
+    // Wrap the AdaptiveLayout in a AutoTabsRouter to enable navigation between tabs.
+    // This is a workaround to use AutoTabsRouter with AdaptiveLayout.
+    // The AutoTabsRouter is a widget that provides a way to navigate between tabs
+    // using the AutoRoute package.
+    return AutoTabsRouter(
+      routes: RootHelper.routes,
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
 
-        return AdaptiveScaffold(
+        return AdaptiveLayout(
           // An option to override the default transition duration.
           transitionDuration: Duration(milliseconds: _transitionDuration),
-          // An option to override the default breakpoints used for small, medium,
-          // mediumLarge, large, and extraLarge.
-          smallBreakpoint: const Breakpoint(endWidth: 700),
-          mediumBreakpoint: const Breakpoint(beginWidth: 700, endWidth: 1000),
-          mediumLargeBreakpoint: const Breakpoint(
-            beginWidth: 1000,
-            endWidth: 1200,
+          // Primary navigation config has nothing from 0 to 600 dp screen width,
+          // then an unextended NavigationRail with no labels and just icons then an
+          // extended NavigationRail with both icons and labels.
+          // medium vs mediumLarger = extended: false vs true ,
+          primaryNavigation: SlotLayout(
+            config: <Breakpoint, SlotLayoutConfig>{
+              Breakpoints.medium: SlotLayout.from(
+                inAnimation: AdaptiveScaffold.leftOutIn,
+                key: const Key('Primary Navigation Medium'),
+                builder:
+                    (_) => AdaptiveScaffold.standardNavigationRail(
+                      selectedIndex: tabsRouter.activeIndex,
+                      onDestinationSelected: (int newIndex) {
+                        setState(() {
+                          onSelectedIndexChange(newIndex);
+                          tabsRouter.setActiveIndex(newIndex);
+                        });
+                      },
+                      extended: false,
+                      leading: const Icon(Icons.menu),
+                      destinations:
+                          destinations
+                              .map(
+                                (NavigationDestination destination) =>
+                                    AdaptiveScaffold.toRailDestination(
+                                      destination,
+                                    ),
+                              )
+                              .toList(),
+                      backgroundColor: navRailTheme.backgroundColor,
+                      selectedIconTheme: navRailTheme.selectedIconTheme,
+                      unselectedIconTheme: navRailTheme.unselectedIconTheme,
+                      selectedLabelTextStyle:
+                          navRailTheme.selectedLabelTextStyle,
+                      unSelectedLabelTextStyle:
+                          navRailTheme.unselectedLabelTextStyle,
+                    ),
+              ),
+              Breakpoints.mediumLargeAndUp: SlotLayout.from(
+                key: const Key('Primary Navigation MediumLarge'),
+                inAnimation: AdaptiveScaffold.leftOutIn,
+                builder:
+                    (_) => AdaptiveScaffold.standardNavigationRail(
+                      selectedIndex: selectedNavigation,
+                      onDestinationSelected: (int newIndex) {
+                        setState(() {
+                          onSelectedIndexChange(newIndex);
+                          tabsRouter.setActiveIndex(newIndex);
+                        });
+                      },
+                      extended: true,
+                      leading: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Text('REPLY', style: headerColor),
+                          const Icon(Icons.menu_open),
+                        ],
+                      ),
+                      destinations:
+                          destinations
+                              .map(
+                                (NavigationDestination destination) =>
+                                    AdaptiveScaffold.toRailDestination(
+                                      destination,
+                                    ),
+                              )
+                              .toList(),
+                      trailing: trailingNavRail,
+                      backgroundColor: navRailTheme.backgroundColor,
+                      selectedIconTheme: navRailTheme.selectedIconTheme,
+                      unselectedIconTheme: navRailTheme.unselectedIconTheme,
+                      selectedLabelTextStyle:
+                          navRailTheme.selectedLabelTextStyle,
+                      unSelectedLabelTextStyle:
+                          navRailTheme.unselectedLabelTextStyle,
+                    ),
+              ),
+            },
           ),
-          largeBreakpoint: const Breakpoint(beginWidth: 1200, endWidth: 1600),
-          extraLargeBreakpoint: const Breakpoint(beginWidth: 1600),
-          useDrawer: false,
-          selectedIndex: tabsRouter.activeIndex, // AutoTabsRouter manages index
-          // selectedIndex: selectedTab,
-          onSelectedIndexChange: (int index) async {
-            tabsRouter.setActiveIndex(index); // Changes the tab instantly
-
-            await onSelectedIndexChange(index);
-          },
-          destinations: destinations,
-          body: (_) => child, // AutoTabsRouter provides the correct page
+          // Body switches between a ListView and a GridView from small to medium
+          // breakpoints and onwards.
+          body: SlotLayout(
+            config: <Breakpoint, SlotLayoutConfig>{
+              Breakpoints.smallAndUp: SlotLayout.from(
+                key: const Key('Body Small'),
+                builder: (_) => child,
+              ),
+            },
+          ),
+          // BottomNavigation is only active in small views defined as under 600 dp
+          // width.
+          bottomNavigation: SlotLayout(
+            config: <Breakpoint, SlotLayoutConfig>{
+              Breakpoints.small: SlotLayout.from(
+                key: const Key('Bottom Navigation Small'),
+                inAnimation: AdaptiveScaffold.bottomToTop,
+                outAnimation: AdaptiveScaffold.topToBottom,
+                builder:
+                    (_) => AdaptiveScaffold.standardBottomNavigationBar(
+                      destinations: destinations,
+                      currentIndex: selectedNavigation,
+                      onDestinationSelected: (int newIndex) {
+                        setState(() {
+                          onSelectedIndexChange(newIndex);
+                          tabsRouter.setActiveIndex(newIndex);
+                        });
+                      },
+                    ),
+              ),
+            },
+          ),
         );
       },
     );
+    // End of AutoTabsRouter workaround.
   }
-
-  // int _getSelectedIndex(BuildContext context) {
-  //   final currentRoute = AutoRouter.of(context).topMatch.name;
-
-  //   if (currentRoute == VehicleListRoute.name) return 0;
-  //   if (currentRoute == VehicleDetailRoute.name) return 1;
-  //   if (currentRoute == TemperatureHistoryRoute.name) return 2;
-  //   if (currentRoute == ProfileRoute.name) return 3;
-
-  //   return 0; // Default to Vehicles
-  // }
 }

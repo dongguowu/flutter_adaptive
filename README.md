@@ -29,6 +29,22 @@ WidgetRef allows access to Riverpod providers.
 3. Define Routes with Nested Structure
 4. Use Path-Based Navigation
 
+```
+lib/
+│── features/
+│   ├── router/
+│   │   ├── app_router.dart        # Defines all app routes
+│   │   ├── app_router.gr.dart     # AutoRoute-generated file
+│   ├── vehicles/
+│   │   ├── vehicle_list_page.dart # Vehicles list screen
+│   │   ├── vehicle_detail_page.dart # Vehicle details screen
+│   ├── temperature/
+│   │   ├── temperature_history_page.dart # Temperature history
+│   ├── profile/
+│   │   ├── profile_page.dart      # Profile screen
+│── main.dart                      # App entry point
+│── adaptive_scaffold_layout.dart  # Adaptive navigation layout
+```
 
 project is structured well with AutoRoute + AdaptiveScaffold + Riverpod. 
 
